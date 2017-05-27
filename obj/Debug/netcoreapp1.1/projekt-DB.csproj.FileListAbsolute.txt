@@ -1,0 +1,16 @@
+/home/wiktor/projekt-DB/bin/Debug/netcoreapp1.1/projekt-DB.deps.json
+/home/wiktor/projekt-DB/bin/Debug/netcoreapp1.1/projekt-DB.runtimeconfig.json
+/home/wiktor/projekt-DB/bin/Debug/netcoreapp1.1/projekt-DB.runtimeconfig.dev.json
+/home/wiktor/projekt-DB/bin/Debug/netcoreapp1.1/projekt-DB.dll
+/home/wiktor/projekt-DB/bin/Debug/netcoreapp1.1/projekt-DB.pdb
+/home/wiktor/projekt-DB/obj/Debug/netcoreapp1.1/projekt-DB.AssemblyInfo.cs
+/home/wiktor/projekt-DB/obj/Debug/netcoreapp1.1/projekt-DB.dll
+/home/wiktor/projekt-DB/obj/Debug/netcoreapp1.1/projekt-DB.pdb
+C:\Users\Wiktor\Documents\projekt-DB\bin\Debug\netcoreapp1.1\projekt-DB.deps.json
+C:\Users\Wiktor\Documents\projekt-DB\bin\Debug\netcoreapp1.1\projekt-DB.runtimeconfig.json
+C:\Users\Wiktor\Documents\projekt-DB\bin\Debug\netcoreapp1.1\projekt-DB.runtimeconfig.dev.json
+C:\Users\Wiktor\Documents\projekt-DB\bin\Debug\netcoreapp1.1\projekt-DB.dll
+C:\Users\Wiktor\Documents\projekt-DB\bin\Debug\netcoreapp1.1\projekt-DB.pdb
+C:\Users\Wiktor\Documents\projekt-DB\obj\Debug\netcoreapp1.1\projekt-DB.AssemblyInfo.cs
+C:\Users\Wiktor\Documents\projekt-DB\obj\Debug\netcoreapp1.1\projekt-DB.dll
+C:\Users\Wiktor\Documents\projekt-DB\obj\Debug\netcoreapp1.1\projekt-DB.pdb
