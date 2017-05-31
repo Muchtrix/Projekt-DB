@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json;
 using Npgsql;
 
@@ -36,7 +37,7 @@ namespace projekt_DB
                 {"proposals", Proposals},
                 {"friends_talks", FriendsTalks},
                 {"friends_events", FriendsEvents},
-                {"recommended_talks", RecommendedTalks}
+                //{"recommended_talks", RecommendedTalks}
             };
         }
         bool IsConnectionOpen = false;
@@ -59,7 +60,7 @@ namespace projekt_DB
                     }
                 }
             } catch (Exception e) {
-                if (DEBUG) Console.WriteLine(e.Message);
+                if (DEBUG) return GetError(e.Message);
                 return Error;
             }
         }
@@ -79,6 +80,14 @@ namespace projekt_DB
             connection = new NpgsqlConnection(connectionStringBuilder.ToString());
             connection.Open();
             IsConnectionOpen = true;
+
+            // Sprawdzenie, czy w bazie są już nasze struktury i ewentualne wczytanie ich z pliku baza.sql
+            var query = new NpgsqlCommand("select count(*) from pg_tables where tablename = 'talk'", connection);
+            if ( (Int64)query.ExecuteScalar() == 0) {
+                var initQuery = new NpgsqlCommand(File.ReadAllText("./baza.sql"), connection);
+                initQuery.ExecuteNonQuery();
+            }
+
             return OK;
         }
 
@@ -138,22 +147,23 @@ namespace projekt_DB
             if (! AuthorizeUser(call["login"], call["password"], "org")){
                 return Error;
             }
-            var transaction = connection.BeginTransaction();
-            var query = new NpgsqlCommand($"insert into talk values(@talk_id, @title, @start_ts, @room, @speaker, {(call["eventname"] == "" ? "NULL" : "@eventname")}, now(), 'accepted')", connection );
-            query.Parameters.AddWithValue("talk_id", call["talk"]);
-            query.Parameters.AddWithValue("title", call["title"]);
-            query.Parameters.AddWithValue("start_ts", DateTime.Parse(call["start_timestamp"]));
-            query.Parameters.AddWithValue("room", int.Parse(call["room"]));
-            query.Parameters.AddWithValue("speaker", call["speakerlogin"]);
-            query.Parameters.AddWithValue("eventname", call["eventname"]);
-            query.ExecuteNonQuery();
+            using(var transaction = connection.BeginTransaction()){
+                var query = new NpgsqlCommand($"insert into talk values(@talk_id, @title, @start_ts, @room, @speaker, {(call["eventname"] == "" ? "NULL" : "@eventname")}, now(), 'accepted')", connection );
+                query.Parameters.AddWithValue("talk_id", call["talk"]);
+                query.Parameters.AddWithValue("title", call["title"]);
+                query.Parameters.AddWithValue("start_ts", DateTime.Parse(call["start_timestamp"]));
+                query.Parameters.AddWithValue("room", int.Parse(call["room"]));
+                query.Parameters.AddWithValue("speaker", call["speakerlogin"]);
+                query.Parameters.AddWithValue("eventname", call["eventname"]);
+                query.ExecuteNonQuery();
 
-            query = new NpgsqlCommand("insert into user_evals_talk values(@usr, @talk, @val)", connection);
-            query.Parameters.AddWithValue("usr", call["login"]);
-            query.Parameters.AddWithValue("talk", call["talk"]);
-            query.Parameters.AddWithValue("val", int.Parse(call["initial_evaluation"]));
-            query.ExecuteNonQuery();
-            transaction.Commit();
+                query = new NpgsqlCommand("insert into user_evals_talk values(@usr, @talk, @val)", connection);
+                query.Parameters.AddWithValue("usr", call["login"]);
+                query.Parameters.AddWithValue("talk", call["talk"]);
+                query.Parameters.AddWithValue("val", int.Parse(call["initial_evaluation"]));
+                query.ExecuteNonQuery();
+                transaction.Commit();
+            }
             return OK;
         }
 
@@ -452,7 +462,7 @@ namespace projekt_DB
             if (! AuthorizeUser(call["login"], call["password"], "org")){
                 return Error;
             }
-            var query = new NpgsqlCommand("select * from talk where status = 'proposed'", connection);
+            var query = new NpgsqlCommand("select talk_id, speaker, start_ts, title from talk where status = 'proposed'", connection);
             var results = new List<Object>();
             using (var reader = query.ExecuteReader()){
                 while(reader.Read()){
@@ -525,7 +535,10 @@ namespace projekt_DB
             }
             return GetResults(results);
         }
-
+        
+        //----------------------------
+        // Funkcja niezaimplementowana
+        //----------------------------
         // (U) recommended_talks <login> <password> <start_timestamp> <end_timestamp> <limit> 
         // zwraca referaty rozpoczynające się w podanym przedziale czasowym,
         // które mogą zainteresować danego uczestnika (zaproponuj parametr <score>
@@ -559,6 +572,7 @@ namespace projekt_DB
 
         string GetResults(List<object> results) => JsonConvert.SerializeObject(new {status = "OK", data = results});
         string GetResults(List<Dictionary<string, string>> results) => JsonConvert.SerializeObject(new {status = "OK", data = results});
+        string GetError(string msg) => $"{{\"status\"=\"ERROR\", \"MSG\"=\"{msg}\"}}";
 
         #region IDisposable
         
