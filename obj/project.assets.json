@@ -7676,16 +7676,16 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Wiktor\\Documents\\projekt-DB\\projekt-DB.csproj",
-      "projectName": "projekt-DB",
-      "projectPath": "C:\\Users\\Wiktor\\Documents\\projekt-DB\\projekt-DB.csproj",
-      "outputPath": "C:\\Users\\Wiktor\\Documents\\projekt-DB\\obj\\",
+      "projectUniqueName": "C:\\Users\\Wiktor\\Documents\\Wiktor-Adamski-projekt\\Wiktor-Adamski-projekt.csproj",
+      "projectName": "Wiktor-Adamski-projekt",
+      "projectPath": "C:\\Users\\Wiktor\\Documents\\Wiktor-Adamski-projekt\\Wiktor-Adamski-projekt.csproj",
+      "outputPath": "C:\\Users\\Wiktor\\Documents\\Wiktor-Adamski-projekt\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "netcoreapp1.1"
       ],
       "files": {
-        "lib/netcoreapp1.1/projekt-DB.dll": "C:\\Users\\Wiktor\\Documents\\projekt-DB\\bin\\placeholder\\netcoreapp1.1\\projekt-DB.dll"
+        "lib/netcoreapp1.1/Wiktor-Adamski-projekt.dll": "C:\\Users\\Wiktor\\Documents\\Wiktor-Adamski-projekt\\bin\\placeholder\\netcoreapp1.1\\Wiktor-Adamski-projekt.dll"
       },
       "frameworks": {
         "netcoreapp1.1": {

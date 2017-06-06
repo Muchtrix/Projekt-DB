@@ -6,13 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
-      "projekt-db/1.0.0": {
+      "wiktor-adamski-projekt/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "10.0.2",
           "Npgsql": "3.2.2"
         },
         "runtime": {
-          "projekt-DB.dll": {}
+          "Wiktor-Adamski-projekt.dll": {}
         }
       },
       "newtonsoft.json/10.0.2": {
@@ -107,7 +107,7 @@
     }
   },
   "libraries": {
-    "projekt-db/1.0.0": {
+    "wiktor-adamski-projekt/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

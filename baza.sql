@@ -183,24 +183,31 @@ $$ LANGUAGE SQL STABLE;
 CREATE FUNCTION best_talks(range_s TIMESTAMP, range_e TIMESTAMP, all_grades BOOLEAN) RETURNS TABLE (talk TEXT, start_timestamp TIMESTAMP, title TEXT, room INT) AS $$
     BEGIN
     IF (all_grades = true) THEN
-        RETURN QUERY SELECT talk_id, start_ts, title, room
-        FROM talk 
+        RETURN QUERY SELECT t.talk_id, t.start_ts, t.title, t.room
+        FROM talk t
             JOIN user_evals_talk USING(talk_id)
-        WHERE range_s <= start_ts
-            AND start_ts <= range_e
-            AND status = 'accepted'
-        GROUP BY talk_id, start_ts, title, room
-        ORDER BY AVG(grade);
+        WHERE range_s <= t.start_ts
+            AND t.start_ts <= range_e
+            AND t.status = 'accepted'
+        GROUP BY t.talk_id, t.start_ts, t.title, t.room
+        ORDER BY AVG(grade) DESC;
     ELSE
-        RETURN QUERY SELECT talk_id, start_ts, title, room
-        FROM talk 
-            JOIN user_evals_talk USING(talk_id)
-            JOIN user_attends_talk USING(talk_id, user_id)
-        WHERE range_s <= start_ts
-            AND start_ts <= range_e
-            AND status = 'accepted'
-        GROUP BY talk_id, start_ts, title, room
-        ORDER BY AVG(grade);
+        RETURN QUERY SELECT t.talk_id, t.start_ts, t.title, t.room
+        FROM talk t
+            JOIN (
+                SELECT uet.talk_id, uet.grade FROM user_evals_talk uet
+                WHERE uet.user_id IN (
+                    SELECT user_id FROM user_attends_talk
+                    WHERE uet.talk_id = talk_id
+                ) OR uet.user_id IN (
+                    SELECT login FROM USERS WHERE role = 'org'
+                )
+            ) AS foo USING(talk_id)
+        WHERE range_s <= t.start_ts
+            AND t.start_ts <= range_e
+            AND t.status = 'accepted'
+        GROUP BY t.talk_id, t.start_ts, t.title, t.room
+        ORDER BY AVG(grade) DESC;
     END IF;
     END; 
 $$ LANGUAGE plpgsql STABLE;

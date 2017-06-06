@@ -3,11 +3,11 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("projekt-DB")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Wiktor-Adamski-projekt")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Package Description")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("projekt-DB")]
-[assembly: System.Reflection.AssemblyTitleAttribute("projekt-DB")]
+[assembly: System.Reflection.AssemblyProductAttribute("Wiktor-Adamski-projekt")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Wiktor-Adamski-projekt")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

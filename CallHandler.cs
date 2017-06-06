@@ -213,8 +213,8 @@ namespace projekt_DB
             if (! AuthorizeUser(call["login"], call["password"], "org")){
                 return Error;
             }
-            var query = new NpgsqlCommand("udpate talk set status = 'rejected' where talk_id = @talk and status = 'proposed'", connection);
-            query.Parameters.AddWithValue("talk", call["call"]);
+            var query = new NpgsqlCommand("update talk set status = 'rejected' where talk_id = @talk", connection);
+            query.Parameters.AddWithValue("talk", call["talk"]);
             query.ExecuteNonQuery();
             return OK;
         }
@@ -306,7 +306,7 @@ namespace projekt_DB
         // wypisuje pierwsze <limit> referatów, przy czym 0 oznacza, że należy wypisać wszystkie
         // Atrybuty zwracanych krotek: <talk> <start_timestamp> <title> <room>
         string BestTalks(Call call) {
-            bool all = (call["all"] == "0");
+            bool all = (call["all"] == "1");
             int limit = int.Parse(call["limit"]);
             var query = new NpgsqlCommand($"select * from best_talks(@sts, @ets, @all) {(limit > 0 ? "LIMIT @lim" : "")}",connection);
             query.Parameters.AddWithValue("sts", DateTime.Parse(call["start_timestamp"]));
@@ -497,10 +497,10 @@ namespace projekt_DB
                 while(reader.Read()){
                     results.Add(new {
                         talk = reader.GetString(0),
-                        start_timestamp = reader.GetTimeStamp(1).ToString(),
-                        title = reader.GetString(2),
-                        room = reader.GetInt32(3).ToString(),
-                        number = reader.GetInt32(4)
+                        speakerlogin = reader.GetString(1),
+                        start_timestamp = reader.GetTimeStamp(2).ToString(),
+                        title = reader.GetString(3),
+                        room = reader.GetInt32(4).ToString()
                     });
                 }
             }
@@ -518,11 +518,9 @@ namespace projekt_DB
             if (! AuthorizeUser(call["login"], call["password"], "usr")){
                 return Error;
             }
-            int limit = int.Parse(call["limit"]);
-            var query = new NpgsqlCommand($"select * from friends_events(@usr, @event) {(limit > 0 ? "LIMIT @lim" : "")}", connection);
+            var query = new NpgsqlCommand($"select * from friends_events(@usr, @event)", connection);
             query.Parameters.AddWithValue("usr", call["login"]);
             query.Parameters.AddWithValue("event", call["event"]);
-            if (limit > 0) query.Parameters.AddWithValue("lim", limit);
             var results = new List<Dictionary<string, string>>();
             using (var reader = query.ExecuteReader()){
                 while(reader.Read()){

@@ -1,0 +1,8 @@
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\bin\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.deps.json
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\bin\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.runtimeconfig.json
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\bin\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.runtimeconfig.dev.json
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\bin\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.dll
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\bin\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.pdb
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\obj\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.AssemblyInfo.cs
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\obj\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.dll
+C:\Users\Wiktor\Documents\Wiktor-Adamski-projekt\obj\Debug\netcoreapp1.1\Wiktor-Adamski-projekt.pdb
