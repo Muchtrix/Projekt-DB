@@ -1015,7 +1015,7 @@
 {"reject": {"login":"Ogi","password":"hejper","talk":"587"}}
 {"user_plan": {"login":"Hyde159","limit":"4"}}
 {"day_plan": {"timestamp":"2017-01-20"}}
-{"best_talks": {"start_timestamp":"2017-01-20","end_timestamp":"2017-02-20","limit":"6","all":"0"}}
+{"best_talks": {"start_timestamp":"2017-01-20","end_timestamp":"2017-02-20","limit":"0","all":"0"}}
 {"most_popular_talks": {"start_timestamp":"2017-01-20","end_timestamp":"2017-02-20","limit":"6"}}
 {"attended_talks": {"login":"Joyce833","password":"aliquip478"}}
 {"abandoned_talks": {"login":"Ogi","password":"hejper","limit":"5"}}

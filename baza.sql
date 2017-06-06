@@ -2,33 +2,6 @@
 -- nr indeksu 272220
 -- Schemat bazy danych do projektu
 
--- Wyczyszczenie poprzedniego stanu bazy danych
--- DROP TABLE IF EXISTS users CASCADE;
--- DROP TABLE IF EXISTS event CASCADE;
--- DROP TABLE IF EXISTS talk CASCADE;
--- DROP FUNCTION IF EXISTS change_talk_status() CASCADE;
--- DROP TABLE IF EXISTS user_evals_talk CASCADE;
--- DROP TABLE IF EXISTS user_registered_for_event CASCADE;
--- DROP TABLE IF EXISTS user_attends_talk CASCADE;
--- DROP TABLE IF EXISTS user_proposes_friends CASCADE;
--- DROP TABLE IF EXISTS user_likes_user CASCADE;
--- DROP FUNCTION IF EXISTS add_friends() CASCADE;
--- DROP FUNCTION IF EXISTS friends(TEXT) CASCADE;
--- DROP FUNCTION IF EXISTS user_plan(TEXT) CASCADE;
--- DROP FUNCTION IF EXISTS day_plan(TIMESTAMP) CASCADE;
--- DROP FUNCTION IF EXISTS best_talks(TIMESTAMP, TIMESTAMP, BOOLEAN) CASCADE;
--- DROP FUNCTION IF EXISTS most_popular_talks(TIMESTAMP, TIMESTAMP) CASCADE;
--- DROP FUNCTION IF EXISTS attended_talks(TEXT) CASCADE;
--- DROP FUNCTION IF EXISTS registered_for_event(TEXT) CASCADE;
--- DROP FUNCTION IF EXISTS number_of_attendants(TEXT) CASCADE;
--- DROP VIEW IF EXISTS abandoned_talks CASCADE;
--- DROP VIEW IF EXISTS recently_added_talks CASCADE;
--- DROP VIEW IF EXISTS rejected_talks CASCADE;
--- DROP FUNCTION IF EXISTS friends_talks(TEXT, TIMESTAMP, TIMESTAMP) CASCADE;
--- DROP FUNCTION IF EXISTS friends_events(TEXT, TEXT) CASCADE;
--- DROP DOMAIN IF EXISTS user_role CASCADE;
--- DROP DOMAIN IF EXISTS talk_status CASCADE;
-
 CREATE DOMAIN user_role AS TEXT
 CHECK( VALUE IN ('usr', 'org'));
 
@@ -221,7 +194,7 @@ CREATE FUNCTION most_popular_talks(range_s TIMESTAMP, range_e TIMESTAMP) RETURNS
         AND start_ts <= range_e
         AND status = 'accepted'
     GROUP BY talk_id, start_ts, title, room
-    ORDER BY COUNT(user_id) DESC;
+    ORDER BY COUNT(DISTINCT user_id) DESC;
 $$ LANGUAGE SQL STABLE;
 
 -- Lista referatów na których był dany użytkownik
@@ -229,7 +202,7 @@ CREATE FUNCTION attended_talks(usr TEXT) RETURNS TABLE (talk TEXT, start_timesta
     SELECT talk_id, start_ts, title, room
     FROM talk
         JOIN user_attends_talk USING(talk_id)
-    WHERE talk_id = usr
+    WHERE user_id = usr
         AND status = 'accepted';
 $$ LANGUAGE SQL STABLE;
 
@@ -240,16 +213,19 @@ CREATE FUNCTION registered_for_event(ev TEXT) RETURNS BIGINT AS $$
     WHERE event_id = ev; 
 $$ LANGUAGE SQL STABLE;
 
--- Liczba uczestników danego wykładu
-CREATE FUNCTION number_of_attendants(talk TEXT) RETURNS BIGINT AS $$
+-- Liczba osób nieobecnych na danym wykładzie
+CREATE FUNCTION number_of_attendants(ev TEXT, talk TEXT) RETURNS BIGINT AS $$
     SELECT COUNT( DISTINCT user_id)
-    FROM user_attends_talk
-    WHERE talk_id = talk;
+    FROM (
+        (SELECT user_id from user_registered_for_event where event_id = ev)
+        EXCEPT 
+        (SELECT user_id from user_attends_talk where talk_id = talk)
+    ) AS foo;
 $$ LANGUAGE SQL STABLE;
 
 -- Widok referatów posortowanych wg. nieobecnych uczestników
 CREATE VIEW abandoned_talks AS
-    SELECT talk_id, start_ts, title, room, (registered_for_event(event_id) - number_of_attendants(talk_id)) AS user_count
+    SELECT talk_id, start_ts, title, room, (number_of_attendants(event_id, talk_id)) AS user_count
     FROM talk
     WHERE status = 'accepted'
     GROUP BY talk_id, start_ts, title, room
